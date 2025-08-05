@@ -253,8 +253,9 @@
         let resetBtn = document.getElementById('resetBtn');
         let incrementBtn = document.getElementById('incrementBtn');
         let decrementBtn = document.getElementById('decrementBtn');
-        let secBtn = document.getElementById('secBtn');
         let thirtysecBtn = document.getElementById('thirtysec');
+        let secIncrementBtn = document.getElementById('secIncrementBtn');
+        let secDecrementBtn = document.getElementById('secDecrementBtn');
 
         let msec = 0, secs = 0, mins = 90; // Default to 1:30
         let timerId = null;
@@ -270,11 +271,11 @@
             updateScoreDisplay();
             updateTimerDisplay();
 
-            stopBtn.addEventListener('click', toggleTimer);
+           stopBtn.addEventListener('click', toggleTimer);
             resetBtn.addEventListener('click', resetTimer);
             incrementBtn.addEventListener('click', () => changeTime(60));
             decrementBtn.addEventListener('click', () => changeTime(-60));
-            secBtn.addEventListener('click', () => changeTime(1));
+            secIncrementBtn.addEventListener('click', () => changeTime(1));
             secDecrementBtn.addEventListener('click', () => changeTime(-1));
             thirtysecBtn.addEventListener('click', () => changeTime(30));
         });
