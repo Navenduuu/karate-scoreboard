@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karate Score - Kumite</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        html, body {
+            height: 100vh;
+            margin: 0;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            overflow-y: hidden;
+            display: flex;
+    flex-direction: column;
+        }
+        .navbar {
+            background-color: #ffffff;
+        }
+        .navbar-brand img {
+            height: 3.5rem;
+        }
+        .marquee-container {
+            font-size: 3rem;
+            font-weight: bold;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .spacing#left, .spacing#right {
+            flex-grow: 1;
+            margin-left: 200PX;
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 56px);
+        }
+        .score-panels {
+            flex-grow: 1;
+            display: flex;
+        }
+        #left-AO, #right-AKA {
+            width: 50%;
+            height: 100%;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        #left-AO { background-color: blue; }
+        #right-AKA { background-color: red;}
+
+        #AO_PointZone, #AKA_PointZone {
+            font-size: 20vw;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .senshu-container {
+            font-size: 1.2rem;
+        }
+        .senshu-container input {
+            width: 20px;
+            height: 20px;
+        }
+        .points-buttons .btn {
+            margin: 2px;
+            width: 120px;
+            padding: 0px 10;
+        }
+        .foul-buttons .btn {
+            margin: 2px;
+            width: 60px;
+            padding: 0px 10;
+        }
+        .stopwatch-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            z-index: 10;
+        }
+        .timerDisplay {
+            font-size: 4rem;
+            font-weight: 600;
+        }
+        .control-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        #aoAka {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 3.5vw;
+            font-weight: 600;
+            color: white;
+            padding: 0 5%;
+            z-index: 5;
+        }
+        .blink {
+            animation: blink-animation 0.5s steps(5, start) infinite;
+        }
+        .btn-light:active ,.btn-warning :active{
+            background-color: #2c2c2c;
+            color: white;
+        }
+        
+        @keyframes blink-animation {
+            to { visibility: hidden; }
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .score-panels {
+                flex-direction: column;
+                height: 100%;
+            }
+            #left-AO, #right-AKA {
+                width: 100%;
+                height: 50%;
+            }
+            .stopwatch-container {
+                width: 80%;
+            }
+            .timerDisplay {
+                font-size: 3rem;
+            }
+            #aoAka {
+                top: 10px;
+                font-size: 8vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="logo.png" alt="Logo">
+            </a>
+            <div class="spacing" id="left"></div>
+            <div class="marquee-container">
+                <marquee behavior="alternate">WSKF INDIA</marquee>
+            </div>
+            <div class="spacing" id="right"></div>
+            <a href="kata1.html" class="btn btn-primary">Kata Score Board</a>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div id="aoAka">
+            <div id="aoLeft">&nbsp;AO&nbsp;</div>
+            <div id="akaRight">&nbsp;AKA</div>
+        </div>
+
+        <!-- Stopwatch -->
+        <div class="stopwatch-container">
+            <div class="timerDisplay">00 : 00</div>
+            <div class="buttons mt-2">
+                <button id="stopBtn" class="btn btn-success mx-1">Start</button>
+                <button id="secIncrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-up"></i> SEC</button>
+                <button id="secDecrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-down"></i> SEC</button>
+                <button id="resetBtn" class="btn btn-info mx-1">Reset</button>
+            </div>
+            <div class="container mt-2">
+                <button id="incrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-up"></i> MIN</button>
+                <button id="decrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-down"></i> MIN</button>
+                <button id="thirtysec" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-up"></i> SEC 30+</button>
+            </div>
+        </div>
+
+        <!-- Score Panels -->
+        <div class="score-panels">
+            <!-- AO Panel (Blue) -->
+            <div id="left-AO">
+                <div id="AO_PointZone" onclick="aoPointZoneAddThree()">0</div>
+                <div class="points-buttons">
+                    <button id="rightippon" class="btn btn-outline-light" onclick="aoPointZoneAdd()">YUKO</button>
+                    <button id="rigthwaza" class="btn btn-outline-light" onclick="aoPointZoneAddTWo()">WAZA-ARI</button>
+                    <button id="rightuko" class="btn btn-outline-light" onclick="aoPointZoneAddThree()">IPPON</button>
+                    <button id="aoPOintMInus" class="btn btn-warning" onclick="aoPointZoneMinus()"><i class="bi bi-dash"></i></button>
+                </div>
+                <div id="leftSen" class="senshu-container">
+                    <label class="form-check-label">SENSHU</label>
+                    <input type="checkbox" class="form-check-input" id="senshuAO">
+                </div>
+                <div id="cat1FoulsAO" class="foul-buttons">
+                    <button id="Cat1_AO_C" class="btn btn-light" onclick="toggleFoul(this)">C1</button>
+                    <button id="Cat1_AO_K" class="btn btn-light" onclick="toggleFoul(this)">C2</button>
+                    <button id="Cat1_AO_HC" class="btn btn-light" onclick="toggleFoul(this)">C3</button>
+                    <button id="Cat2_AO_C" class="btn btn-warning" onclick="toggleFoul(this)">HC</button>
+                    <button id="Cat2_AO_K" class="btn btn-danger" onclick="toggleFoul(this, foulAO)">H</button>
+                </div>
+            </div>
+
+            <!-- AKA Panel (Red) -->
+            <div id="right-AKA">
+                <div id="AKA_PointZone" onclick="akaPointZoneAddThree()">0</div>
+                <div class="points-buttons">
+                    <button id="leftippon" class="btn btn-outline-light" onclick="akaPointZoneAdd()">YUKO</button>
+                    <button id="leftwaza" class="btn btn-outline-light" onclick="akaPointZoneAddTWo()">WAZA-ARI</button>
+                    <button id="leftuko" class="btn btn-outline-light" onclick="akaPointZoneAddThree()">IPPON</button>
+                    <button id="akaPOintMInus" class="btn btn-warning" onclick="akaPointZoneMinus()"><i class="bi bi-dash"></i></button>
+                </div>
+                <div id="rightSen" class="senshu-container">
+                    <label class="form-check-label">SENSHU</label>
+                    <input type="checkbox" class="form-check-input" id="senshuAKA">
+                </div>
+                <div id="cat1FoulsAKA" class="foul-buttons">
+                    <button id="Cat1_AKA_C" class="btn btn-light" onclick="toggleFoul(this)">C1</button>
+                    <button id="Cat1_AKA_K" class="btn btn-light" onclick="toggleFoul(this)">C2</button>
+                    <button id="Cat1_AKA_HC" class="btn btn-light" onclick="toggleFoul(this)">C3</button>
+                    <button id="Cat2_AKA_C" class="btn btn-warning" onclick="toggleFoul(this)">HC</button>
+                    <button id="Cat2_AKA_K" class="btn btn-danger" onclick="toggleFoul(this, foulAKA)">H</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="control-buttons">
+            <button id="togBtn" class="btn btn-light" onclick="toggleText()"><i class="bi bi-arrow-left-right"></i></button>
+            <button class="btn btn-dark" onclick="stopBlink()"><i class="bi bi-sign-stop-fill"></i></button><br><br>
+            <button class="btn btn-dark" onclick="window.location.reload();">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Reset Window</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Your Custom JavaScript -->
+    <script>
+        // Timer variables
+        let timerDisplay = document.querySelector('.timerDisplay');
+        let stopBtn = document.getElementById('stopBtn');
+        let resetBtn = document.getElementById('resetBtn');
+        let incrementBtn = document.getElementById('incrementBtn');
+        let decrementBtn = document.getElementById('decrementBtn');
+        let secBtn = document.getElementById('secBtn');
+        let thirtysecBtn = document.getElementById('thirtysec');
+
+        let msec = 0, secs = 0, mins = 90; // Default to 1:30
+        let timerId = null;
+        let isTimerRunning = false;
+
+        // Point Management
+        let AO_Points = 0, AKA_Points = 0;
+        let aoPointZone, akaPointZone;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            aoPointZone = document.getElementById("AO_PointZone");
+            akaPointZone = document.getElementById("AKA_PointZone");
+            updateScoreDisplay();
+            updateTimerDisplay();
+
+            stopBtn.addEventListener('click', toggleTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            incrementBtn.addEventListener('click', () => changeTime(60));
+            decrementBtn.addEventListener('click', () => changeTime(-60));
+            secBtn.addEventListener('click', () => changeTime(1));
+            secDecrementBtn.addEventListener('click', () => changeTime(-1));
+            thirtysecBtn.addEventListener('click', () => changeTime(30));
+        });
+
+        function updateTimerDisplay() {
+            let displayMins = Math.floor(mins / 60);
+            let displaySecs = mins % 60;
+            timerDisplay.innerHTML = `${formatTime(displayMins)} : ${formatTime(displaySecs)}`;
+        }
+
+        function changeTime(seconds) {
+            if (!isTimerRunning) {
+                mins += seconds;
+                if (mins < 0) mins = 0;
+                updateTimerDisplay();
+            }
+        }
+        
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerId);
+                stopBtn.classList.replace('btn-danger', 'btn-success');
+                stopBtn.textContent = 'Start';
+            } else {
+                if (mins > 0) {
+                    timerId = setInterval(startTimer, 1000);
+                    stopBtn.classList.replace('btn-success', 'btn-danger');
+                    stopBtn.textContent = 'Stop';
+                }
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
+        function startTimer() {
+            if (mins <= 0) {
+                clearInterval(timerId);
+                isTimerRunning = false;
+                stopBtn.classList.replace('btn-danger', 'btn-success');
+                stopBtn.textContent = 'Start';
+                zero();
+                return;
+            }
+            mins--;
+            updateTimerDisplay();
+        }
+        
+        function resetTimer() {
+            clearInterval(timerId);
+            isTimerRunning = false;
+            mins = 90; // Reset to 1:30
+            updateTimerDisplay();
+            stopBtn.classList.replace('btn-danger', 'btn-success');
+            stopBtn.textContent = 'Start';
+        }
+
+        function formatTime(time) {
+            return time < 10 ? `0${time}` : time;
+        }
+
+        function updateScoreDisplay() {
+            aoPointZone.innerHTML = AO_Points;
+            akaPointZone.innerHTML = AKA_Points;
+        }
+
+        // Point Functions
+        function aoPointZoneAdd() { AO_Points++; checkEndCondition(); }
+        function aoPointZoneAddTWo() { AO_Points += 2; checkEndCondition(); }
+        function aoPointZoneAddThree() { AO_Points += 3; checkEndCondition(); }
+        function aoPointZoneMinus() { if (AO_Points > 0) AO_Points--; updateScoreDisplay(); }
+
+        function akaPointZoneAdd() { AKA_Points++; checkEndCondition(); }
+        function akaPointZoneAddTWo() { AKA_Points += 2; checkEndCondition(); }
+        function akaPointZoneAddThree() { AKA_Points += 3; checkEndCondition(); }
+        function akaPointZoneMinus() { if (AKA_Points > 0) AKA_Points--; updateScoreDisplay(); }
+
+        function checkEndCondition() {
+            updateScoreDisplay();
+            const scoreDifference = Math.abs(AO_Points - AKA_Points);
+            if (scoreDifference >= 8) {
+                if (AO_Points > AKA_Points) {
+                    blinkElement(aoPointZone);
+                } else {
+                    blinkElement(akaPointZone);
+                }
+                clearInterval(timerId);
+                isTimerRunning = false;
+            }
+        }
+
+        function zero() {
+            stopBlink(); // Clear previous blinks
+            const aoScore = AO_Points;
+            const akaScore = AKA_Points;
+            const aoSenshu = document.getElementById('senshuAO').checked;
+            const akaSenshu = document.getElementById('senshuAKA').checked;
+
+            if (aoScore > akaScore) {
+                blinkElement(aoPointZone);
+            } else if (akaScore > aoScore) {
+                blinkElement(akaPointZone);
+            } else { // Scores are equal
+                if (aoSenshu) blinkElement(aoPointZone);
+                else if (akaSenshu) blinkElement(akaPointZone);
+            }
+        }
+
+        function foulAO() { blinkElement(akaPointZone); }
+        function foulAKA() { blinkElement(aoPointZone); }
+
+        function toggleFoul(button, foulFunction) {
+            button.classList.toggle('active');
+            if (button.classList.contains('active') && foulFunction) {
+                foulFunction();
+            }
+            // const foulButtons = document.querySelectorAll('.foul-buttons .btn');
+            // foulButtons.style.backgroundColor= 'red';
+            button.style.backgroundColor = button.classList.contains('active') ? '#0f0d0d' : '';
+            button.style.color = button.classList.contains('active') ? 'white' : '';
+
+        }
+
+        function blinkElement(element) {
+            stopBlink();
+            element.classList.add('blink');
+        }
+
+        function stopBlink() {
+            aoPointZone.classList.remove('blink');
+            akaPointZone.classList.remove('blink');
+        }
+
+        function toggleText() {
+            const leftPanel = document.getElementById('left-AO');
+            const rightPanel = document.getElementById('right-AKA');
+            const aoLeft = document.getElementById('aoLeft');
+            const akaRight = document.getElementById('akaRight');
+
+            // Get the computed style which reads CSS from stylesheets
+            const leftPanelStyle = window.getComputedStyle(leftPanel);
+            const rightPanelStyle = window.getComputedStyle(rightPanel);
+
+            // Store the actual background colors
+            const leftColor = leftPanelStyle.backgroundColor;
+            const rightColor = rightPanelStyle.backgroundColor;
+
+            // Swap the background colors by setting the inline style
+            leftPanel.style.backgroundColor = rightColor;
+            rightPanel.style.backgroundColor = leftColor;
+
+            // Swap text labels
+            const leftText = aoLeft.innerHTML;
+            aoLeft.innerHTML = akaRight.innerHTML;
+            akaRight.innerHTML = leftText;
+        }
+    </script>
+</body>
+</html>
