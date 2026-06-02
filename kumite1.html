@@ -1,49 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karate Score - Kumite</title>
     <link rel="shortcut icon" href="logo.png" type="image/x-icon">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Local Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Local Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css">
+
     <style>
-        html, body {
+        html,
+        body {
             height: 100vh;
             margin: 0;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             overflow-y: hidden;
             display: flex;
-    flex-direction: column;
+            flex-direction: column;
         }
+
         .navbar {
-            background-color: #ffffff;
+            background-color: #fffdef;
+            /* max-height: 5rem; */
         }
+
         .navbar-brand img {
             height: 3.5rem;
         }
+
         .marquee-container {
             font-size: 3rem;
             font-weight: bold;
-            flex-grow: 1;
             text-align: center;
+            align-items: center;
+            flex-grow: 1;
         }
-        .spacing#left, .spacing#right {
+
+        .spacing#left,
+        .spacing#right {
             flex-grow: 1;
             margin-left: 200PX;
         }
+
         .main-content {
             display: flex;
             flex-direction: column;
             height: calc(100vh - 56px);
         }
+
         .score-panels {
             flex-grow: 1;
             display: flex;
         }
-        #left-AO, #right-AKA {
+
+        #left-AO,
+        #right-AKA {
             width: 50%;
             height: 100%;
             color: white;
@@ -54,31 +68,75 @@
             padding: 20px;
             position: relative;
         }
-        #left-AO { background-color: blue; }
-        #right-AKA { background-color: red;}
 
-        #AO_PointZone, #AKA_PointZone {
+        #left-AO {
+            background-color: blue;
+        }
+
+        #right-AKA {
+            background-color: red;
+        }
+
+        #AO_PointZone,
+        #AKA_PointZone {
             font-size: 20vw;
             font-weight: bold;
             cursor: pointer;
         }
+
         .senshu-container {
             font-size: 1.2rem;
+            display: flex;
+            align-items: center;
         }
+
+        .senshu-container label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
         .senshu-container input {
-            width: 20px;
-            height: 20px;
+            display: none;
         }
+
+        .senshu-indicator {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: inline-block;
+            transition: all 0.2s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #senshuAO:checked+.senshu-indicator {
+            background-color: #F21616;
+            /* opposite red for blue background */
+            border-color: #F21616;
+            box-shadow: 0 0 12px #F21616;
+        }
+
+        #senshuAKA:checked+.senshu-indicator {
+            background-color: #2256F2;
+            /* opposite blue for red background */
+            border-color: #2256F2;
+            box-shadow: 0 0 12px #2256F2;
+        }
+
         .points-buttons .btn {
             margin: 2px;
             width: 120px;
             padding: 0px 10;
         }
+
         .foul-buttons .btn {
             margin: 2px;
             width: 60px;
             padding: 0px 10;
         }
+
         .stopwatch-container {
             position: absolute;
             top: 50%;
@@ -91,10 +149,12 @@
             text-align: center;
             z-index: 10;
         }
+
         .timerDisplay {
             font-size: 4rem;
             font-weight: 600;
         }
+
         .control-buttons {
             position: absolute;
             bottom: 20px;
@@ -103,6 +163,7 @@
             transform: translateX(-50%);
             z-index: 10;
         }
+
         #aoAka {
             position: absolute;
             width: 100%;
@@ -114,33 +175,54 @@
             padding: 0 5%;
             z-index: 5;
         }
+
         .blink {
             animation: blink-animation 0.5s steps(5, start) infinite;
         }
-        .btn-light:active ,.btn-warning :active{
+
+        .btn-light:active,
+        .btn-warning :active {
             background-color: #2c2c2c;
             color: white;
         }
-        
-        @keyframes blink-animation {
-            to { visibility: hidden; }
+
+        .footer {
+            margin-top: auto;
+            font-family: Arial, sans-serif;
+            font-size: 0.8rem;
+            /* background-color: #2256F2; */
+            color: rgba(255, 255, 255, 0.685);
+            text-align: center;
+            align-items: end;
         }
+
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .score-panels {
                 flex-direction: column;
                 height: 100%;
             }
-            #left-AO, #right-AKA {
+
+            #left-AO,
+            #right-AKA {
                 width: 100%;
                 height: 50%;
             }
+
             .stopwatch-container {
                 width: 80%;
             }
+
             .timerDisplay {
                 font-size: 3rem;
             }
+
             #aoAka {
                 top: 10px;
                 font-size: 8vw;
@@ -148,6 +230,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-light">
@@ -174,8 +257,10 @@
             <div class="timerDisplay">00 : 00</div>
             <div class="buttons mt-2">
                 <button id="stopBtn" class="btn btn-success mx-1">Start</button>
-                <button id="secIncrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-up"></i> SEC</button>
-                <button id="secDecrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-down"></i> SEC</button>
+                <button id="secIncrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-up"></i>
+                    SEC</button>
+                <button id="secDecrementBtn" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-down"></i>
+                    SEC</button>
                 <button id="resetBtn" class="btn btn-info mx-1">Reset</button>
             </div>
             <div class="container mt-2">
@@ -192,20 +277,24 @@
                 <div id="AO_PointZone" onclick="aoPointZoneAddThree()">0</div>
                 <div class="points-buttons">
                     <button id="rightippon" class="btn btn-outline-light" onclick="aoPointZoneAdd()">YUKO</button>
-                    <button id="rigthwaza" class="btn btn-outline-light" onclick="aoPointZoneAddTWo()">WAZA-ARI</button>
+                    <button id="rigthwaza" class="btn btn-outline-light" onclick="aoPointZoneAddTWo()">WAZA-RI</button>
                     <button id="rightuko" class="btn btn-outline-light" onclick="aoPointZoneAddThree()">IPPON</button>
-                    <button id="aoPOintMInus" class="btn btn-warning" onclick="aoPointZoneMinus()"><i class="bi bi-dash"></i></button>
+                    <button id="aoPOintMInus" class="btn btn-warning" onclick="aoPointZoneMinus()"><i
+                            class="bi bi-dash"></i></button>
                 </div>
                 <div id="leftSen" class="senshu-container">
-                    <label class="form-check-label">SENSHU</label>
-                    <input type="checkbox" class="form-check-input" id="senshuAO">
+                    <label>
+                        <span>SENSHU</span>
+                        <input type="checkbox" id="senshuAO">
+                        <span class="senshu-indicator"></span>
+                    </label>
                 </div>
                 <div id="cat1FoulsAO" class="foul-buttons">
                     <button id="Cat1_AO_C" class="btn btn-light" onclick="toggleFoul(this)">C1</button>
                     <button id="Cat1_AO_K" class="btn btn-light" onclick="toggleFoul(this)">C2</button>
                     <button id="Cat1_AO_HC" class="btn btn-light" onclick="toggleFoul(this)">C3</button>
                     <button id="Cat2_AO_C" class="btn btn-warning" onclick="toggleFoul(this)">HC</button>
-                    <button id="Cat2_AO_K" class="btn btn-danger" onclick="toggleFoul(this, foulAO)">H</button>
+                    <button id="Cat2_AO_K" class="btn btn-warning" onclick="toggleFoul(this, foulAO)">H</button>
                 </div>
             </div>
 
@@ -214,39 +303,44 @@
                 <div id="AKA_PointZone" onclick="akaPointZoneAddThree()">0</div>
                 <div class="points-buttons">
                     <button id="leftippon" class="btn btn-outline-light" onclick="akaPointZoneAdd()">YUKO</button>
-                    <button id="leftwaza" class="btn btn-outline-light" onclick="akaPointZoneAddTWo()">WAZA-ARI</button>
+                    <button id="leftwaza" class="btn btn-outline-light" onclick="akaPointZoneAddTWo()">WAZA-RI</button>
                     <button id="leftuko" class="btn btn-outline-light" onclick="akaPointZoneAddThree()">IPPON</button>
-                    <button id="akaPOintMInus" class="btn btn-warning" onclick="akaPointZoneMinus()"><i class="bi bi-dash"></i></button>
+                    <button id="akaPOintMInus" class="btn btn-warning" onclick="akaPointZoneMinus()"><i
+                            class="bi bi-dash"></i></button>
                 </div>
                 <div id="rightSen" class="senshu-container">
-                    <label class="form-check-label">SENSHU</label>
-                    <input type="checkbox" class="form-check-input" id="senshuAKA">
+                    <label>
+                        <span>SENSHU</span>
+                        <input type="checkbox" id="senshuAKA">
+                        <span class="senshu-indicator"></span>
+                    </label>
                 </div>
                 <div id="cat1FoulsAKA" class="foul-buttons">
                     <button id="Cat1_AKA_C" class="btn btn-light" onclick="toggleFoul(this)">C1</button>
                     <button id="Cat1_AKA_K" class="btn btn-light" onclick="toggleFoul(this)">C2</button>
                     <button id="Cat1_AKA_HC" class="btn btn-light" onclick="toggleFoul(this)">C3</button>
                     <button id="Cat2_AKA_C" class="btn btn-warning" onclick="toggleFoul(this)">HC</button>
-                    <button id="Cat2_AKA_K" class="btn btn-danger" onclick="toggleFoul(this, foulAKA)">H</button>
+                    <button id="Cat2_AKA_K" class="btn btn-warning" onclick="toggleFoul(this, foulAKA)">H</button>
                 </div>
             </div>
         </div>
-        
+
         <!-- Controls -->
         <div class="control-buttons">
-            <button id="togBtn" class="btn btn-light" onclick="toggleText()"><i class="bi bi-arrow-left-right"></i></button>
+            <button id="togBtn" class="btn btn-light" onclick="toggleText()"><i
+                    class="bi bi-arrow-left-right"></i></button>
             <button class="btn btn-dark" onclick="stopBlink()"><i class="bi bi-sign-stop-fill"></i></button><br><br>
             <button class="btn btn-dark" onclick="window.location.reload();">
                 <i class="bi bi-arrow-clockwise"></i>
                 <span>Reset Window</span>
             </button>
         </div>
-        <P style="margin-left: auto; margin-right: auto; bottom: 2px;"> <i>Develped By</i> <b><span>Daksha Karate Club</span></b></P>
     </div>
+    <!-- Footer -->
+    <footer class="footer fixed-bottom">
+        <i>Developed by</i><b>&nbsp;&nbsp; Daksha Karate Club </b>
+    </footer>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Your Custom JavaScript -->
     <script>
         // Timer variables
@@ -267,13 +361,23 @@
         let AO_Points = 0, AKA_Points = 0;
         let aoPointZone, akaPointZone;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             aoPointZone = document.getElementById("AO_PointZone");
             akaPointZone = document.getElementById("AKA_PointZone");
             updateScoreDisplay();
             updateTimerDisplay();
 
-           stopBtn.addEventListener('click', toggleTimer);
+            // Ensure only one Senshu is active at a time
+            const senshuAO = document.getElementById('senshuAO');
+            const senshuAKA = document.getElementById('senshuAKA');
+            senshuAO.addEventListener('change', function () {
+                if (this.checked) senshuAKA.checked = false;
+            });
+            senshuAKA.addEventListener('change', function () {
+                if (this.checked) senshuAO.checked = false;
+            });
+
+            stopBtn.addEventListener('click', toggleTimer);
             resetBtn.addEventListener('click', resetTimer);
             incrementBtn.addEventListener('click', () => changeTime(60));
             decrementBtn.addEventListener('click', () => changeTime(-60));
@@ -295,7 +399,7 @@
                 updateTimerDisplay();
             }
         }
-        
+
         function toggleTimer() {
             if (isTimerRunning) {
                 clearInterval(timerId);
@@ -323,7 +427,7 @@
             mins--;
             updateTimerDisplay();
         }
-        
+
         function resetTimer() {
             clearInterval(timerId);
             isTimerRunning = false;
@@ -433,5 +537,7 @@
             akaRight.innerHTML = leftText;
         }
     </script>
+    <script defer src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
